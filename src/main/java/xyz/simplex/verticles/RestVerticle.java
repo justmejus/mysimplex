@@ -57,7 +57,7 @@ public class RestVerticle extends AbstractVerticle {
             case "redis":
             default:
                 RedisOptions config = new RedisOptions()
-                        .setHost(config().getString("redis.host", "127.0.0.1"))
+                        .setHost(config().getString("redis.host", "redis"))
                         .setPort(config().getInteger("redis.port", 6379));
                 service = new RedisTaskService(config);
         }
