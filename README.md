@@ -22,6 +22,7 @@ Docker Engine and Docker Compose are supposed to be installed and available in P
 $ cd <root directory of the service>
 $ gradlew composeUp
 ```
+Two docker container will be running (one executes Redis, the second executes the java application).
 
 ### Usage ###
 
