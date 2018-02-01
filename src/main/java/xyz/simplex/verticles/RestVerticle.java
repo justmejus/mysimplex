@@ -1,7 +1,5 @@
 package xyz.simplex.verticles;
 
-import com.fasterxml.jackson.databind.deser.NullValueProvider;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -21,7 +19,6 @@ import io.vertx.ext.web.api.validation.ValidationException;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.redis.RedisOptions;
-import org.apache.commons.lang3.ObjectUtils;
 import xyz.simplex.Constants;
 import xyz.simplex.entity.*;
 import xyz.simplex.service.RedisTaskService;
@@ -108,6 +105,7 @@ public class RestVerticle extends AbstractVerticle {
         router.get(Constants.API_GET).handler(this::handleGetTodo);
         router.get(Constants.API_LIST_ALL).handler(this::handleGetAll);
         router.get(Constants.API_GET_SOLUTION).handler(this::handleGetSolution);
+        router.post(Constants.API_SHUTDOWN).handler((this::handleShutdown));
         router.post(Constants.API_CREATE)
                 .handler(validationHandler)
                 .handler(this::handleCreateTodo)
@@ -158,13 +156,13 @@ public class RestVerticle extends AbstractVerticle {
 
     private void handleCreateTodo(RoutingContext context) {
         try {
-            System.out.println("entrato");
+
             final Task todo = wrapObject(new Task(), context);
-            System.out.println("entrato");
+
             final String encoded = Json.encodePrettily(todo);
             ProblemDTO problemDTO = new ProblemDTO(context.getBodyAsString());
 
-            System.out.println("entrato");
+
             service.insert(todo).setHandler(resultHandler(context, res -> {
                 if (res) {
 
@@ -180,8 +178,8 @@ public class RestVerticle extends AbstractVerticle {
                                             future.complete(new ZeroOneKnapsack(problemDTO.getProblem().getCapacity(),problemDTO.getProblem().getWeights(),problemDTO.getProblem().getValues()).calcSolution());
                                         }, resp -> {
                                             if (resp.succeeded()) {
-                                                System.out.println(problemDTO.getProblem());
-                                                System.out.println(resp.result());
+                                              LOGGER.info(problemDTO.getProblem());
+                                                LOGGER.info(resp.result());
 
 
 
@@ -244,13 +242,13 @@ public class RestVerticle extends AbstractVerticle {
     }
 
     private void handleGetSolution(RoutingContext context) {
-        String todoID = context.request().getParam("todoId");
-        if (todoID == null) {
+        String taskId = context.request().getParam("taskId");
+        if (taskId == null) {
             sendError(400, context.response());
             return;
         }
 
-        service.getCertainSolution(todoID).setHandler(resultHandler(context, res -> {
+        service.getCertainSolution(taskId).setHandler(resultHandler(context, res -> {
             if (!res.isPresent())
                 notFound(context);
             else {
@@ -323,6 +321,19 @@ public class RestVerticle extends AbstractVerticle {
     private void handleDeleteAll(RoutingContext context) {
         service.deleteAll()
                 .setHandler(deleteResultHandler(context));
+    }
+
+    private void handleShutdown(RoutingContext context) {
+
+
+                context.response()
+                .putHeader("content-type", "application/json")
+                .end("Service Shutting down...");
+
+        context.vertx().close(r->{
+            System.exit(0);});
+
+
     }
 
     private void sendError(int statusCode, HttpServerResponse response) {

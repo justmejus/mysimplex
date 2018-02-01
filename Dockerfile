@@ -1,6 +1,6 @@
 FROM java:8-jre
 
-ENV VERTICLE_FILE build/libs/vertx-blueprint-todo-backend-fat.jar
+ENV VERTICLE_FILE build/libs/vertx-knapsack-fat.jar
 
 # Set the location of the verticles
 ENV VERTICLE_HOME /usr/verticles
@@ -12,4 +12,4 @@ COPY config/config_docker.json $VERTICLE_HOME/
 
 WORKDIR $VERTICLE_HOME
 ENTRYPOINT ["sh", "-c"]
-CMD ["java -jar vertx-blueprint-todo-backend-fat.jar"]
+CMD ["java -jar vertx-knapsack-fat.jar"]

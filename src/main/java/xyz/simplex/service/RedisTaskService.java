@@ -32,15 +32,14 @@ public class RedisTaskService implements TaskService {
 
     @Override
     public Future<Boolean> initData() {
-//        return insert(new Task(Math.abs(new java.util.Random().nextInt()),
-//                "Something to do...", false, 1, "todo/ex"));
+
         deleteAll();
         return Future.future();
     }
 
     @Override
     public Future<Boolean> insert(Task todo) {
-        System.out.println("entrato");
+
         Future<Boolean> result = Future.future();
         final String encoded = Json.encodePrettily(todo);
         redis.hset(Constants.REDIS_TASK_KEY, String.valueOf(todo.getTask()),

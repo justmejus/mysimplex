@@ -73,12 +73,12 @@ public class Problem {
         return value == null ? defaultValue : value;
     }
 
-    public Problem merge(Problem todo) {
+    public Problem merge(Problem knapsack) {
         return new Problem(
 
-                getOrElse(todo.weights, weights),
-                getOrElse(todo.values, values),
-                getOrElse(todo.capacity, capacity)
+                getOrElse(knapsack.weights, weights),
+                getOrElse(knapsack.values, values),
+                getOrElse(knapsack.capacity, capacity)
                 );
     }
 
