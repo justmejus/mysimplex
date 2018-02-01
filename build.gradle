@@ -1,0 +1,65 @@
+
+plugins {
+    id 'java'
+    id 'com.avast.gradle.docker-compose' version "0.6.12"
+
+}
+version '3.5.0'
+
+ext {
+    vertxVersion = "3.5.0"
+}
+
+jar {
+    // by default fat jar
+    archiveName = 'vertx-knapsack-fat.jar'
+    baseName = 'vertx-knapsack-fat'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    manifest {
+        //attributes 'Main-Class': 'xyz.simplex.simplexApp'
+        attributes 'Main-Class': 'io.vertx.core.Launcher'
+        attributes 'Main-Verticle': 'xyz.simplex.verticles.RestVerticle'
+    }
+}
+
+task annotationProcessing(type: JavaCompile, group: 'build') {
+    source = sourceSets.main.java
+    classpath = configurations.compile + configurations.compileOnly
+    destinationDir = project.file('src/main/generated')
+    options.compilerArgs = [
+            "-proc:only",
+            "-processor", "io.vertx.codegen.CodeGenProcessor",
+            "-AoutputDirectory=${destinationDir.absolutePath}"
+    ]
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += 'src/main/generated'
+        }
+    }
+}
+
+compileJava {
+    targetCompatibility = 1.8
+    sourceCompatibility = 1.8
+
+    dependsOn annotationProcessing
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+
+    compile "io.vertx:vertx-core:${vertxVersion}"
+    compile "io.vertx:vertx-web:${vertxVersion}"
+    compile "io.vertx:vertx-redis-client:${vertxVersion}"
+    compile "io.vertx:vertx-web-api-contract:${vertxVersion}"
+    compileOnly "io.vertx:vertx-codegen:${vertxVersion}"
+
+    testCompile "io.vertx:vertx-unit:${vertxVersion}"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
