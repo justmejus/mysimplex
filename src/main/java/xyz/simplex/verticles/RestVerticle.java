@@ -175,7 +175,7 @@ public class RestVerticle extends AbstractVerticle {
                                         notFound(context);
                                     else {
                                         vertx.executeBlocking(future -> {
-                                            future.complete(new ZeroOneKnapsack(problemDTO.getProblem().getCapacity(),problemDTO.getProblem().getWeights(),problemDTO.getProblem().getValues()).calcSolution());
+                                            future.complete(new ZeroOneKnapsack(problemDTO.getProblem().getCapacity(),problemDTO.getProblem().getValues(),problemDTO.getProblem().getWeights()).calcSolution());
                                         }, resp -> {
                                             if (resp.succeeded()) {
                                               LOGGER.info(problemDTO.getProblem());

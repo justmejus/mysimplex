@@ -33,7 +33,7 @@ public class ZeroOneKnapsack {
     public List<Integer> calcSolution() {
         List<Integer> solution=new ArrayList<>();
         Integer[] wt = weights.toArray(new Integer[weights.size()]);
-        Integer[] val = weights.toArray(new Integer[weights.size()]);
+        Integer[] val = values.toArray(new Integer[values.size()]);
         int N = weights.size(); // Get the total number of items. Could be wt.length or val.length. Doesn't matter
         int[][] V = new int[N + 1][maxWeight + 1]; //Create a matrix. Items are in rows and weight at in columns +1 on each side
         //What if the knapsack's capacity is 0 - Set all columns at row 0 to be 0
