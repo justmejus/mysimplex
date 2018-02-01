@@ -223,7 +223,7 @@ public class RestVerticle extends AbstractVerticle {
     }
 
     private void handleGetTodo(RoutingContext context) {
-        String todoID = context.request().getParam("todoId");
+        String todoID = context.request().getParam("taskId");
         if (todoID == null) {
             sendError(400, context.response());
             return;
