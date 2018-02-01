@@ -10,9 +10,9 @@ public class ZeroOneKnapsackTest {
     @Test
     public void calcSolution() throws Exception {
 
-        ZeroOneKnapsack zeroOneKnapsack= new ZeroOneKnapsack(14,Stream.of(3,4,5,6).collect(Collectors.toList()),Stream.of(3,4,5,10).collect(Collectors.toList()) );
+        ZeroOneKnapsack zeroOneKnapsack= new ZeroOneKnapsack(15,Stream.of(3,9,5,6).collect(Collectors.toList()),Stream.of(6,4,5,10).collect(Collectors.toList()) );
         List<Integer> sol=zeroOneKnapsack.calcSolution();
-
+System.out.println(sol);
     }
 
 }

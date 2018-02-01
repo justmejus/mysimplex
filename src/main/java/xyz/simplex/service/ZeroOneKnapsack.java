@@ -4,9 +4,7 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ZeroOneKnapsack {
@@ -36,6 +34,7 @@ public class ZeroOneKnapsack {
         Integer[] val = values.toArray(new Integer[values.size()]);
         int N = weights.size(); // Get the total number of items. Could be wt.length or val.length. Doesn't matter
         int[][] V = new int[N + 1][maxWeight + 1]; //Create a matrix. Items are in rows and weight at in columns +1 on each side
+        int[][] picks = new int[N + 1][maxWeight + 1];
         //What if the knapsack's capacity is 0 - Set all columns at row 0 to be 0
         for (int col = 0; col <= maxWeight; col++) {
             V[0][col] = 0;
@@ -51,25 +50,54 @@ public class ZeroOneKnapsack {
                 if (wt[item-1]<=weight){
                     //Given a weight, check if the value of the current item + value of the item that we could afford with the remaining weight
                     //is greater than the value without the current item itself
+
                     V[item][weight]=Math.max (val[item-1]+V[item-1][weight-wt[item-1]], V[item-1][weight]);
-                    if(!solution.contains(item-1))
-                        solution.add(item-1);
+
+
+
+
+                    if(val[item-1]+V[item-1][weight-wt[item-1]]> V[item-1][weight])
+                        picks[item-1][weight]=1;
+                    else picks[item-1][weight]=-1;
+
                 }
                 else {
                     //If the current item's weight is more than the running weight, just carry forward the value without the current item
                     V[item][weight]=V[item-1][weight];
+                    picks[item-1][weight]=-1;
+
+
                 }
+
+
+
+            }
+
+        }
+//        //Printing the matrix
+        for (int[] rows : picks) {
+            for (int col : rows) {
+                System.out.format("%5d", col);
+            }
+            System.out.println();
+        }
+        int item=N;
+        int w=maxWeight;
+        while (item>0 && w >0){
+            if (picks[item-1][w]==1){
+                solution.add(item-1);
+
+                w -= wt[item-1];
+                item--;
+            }
+            else{
+                item--;
+
             }
         }
-        //Printing the matrix
-//        for (int[] rows : V) {
-//            for (int col : rows) {
-//                System.out.format("%5d", col);
-//            }
-//            System.out.println();
-//        }
 
-
+//solution.add(V[N][maxWeight]);
+        Collections.sort(solution);
         return solution;
     }
 
