@@ -20,8 +20,8 @@ Docker Engine and Docker Compose are supposed to be installed and available in P
 
 ```bash
 $ cd <root directory of the service>
-$ gradlew build
-$ gradlew composeUp
+$ gradle build
+$ gradle composeUp
 ```
 To kill docker containers:
 ```bash
